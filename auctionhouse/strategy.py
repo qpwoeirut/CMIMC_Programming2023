@@ -139,16 +139,30 @@ def reveng (wallet, history):
     z = wins(wallet, history)
     res = 100
     guess = []
+    cnt = 0
+    cnt2 = 0
+
     for i,j in history:
         guess.append(i)
+        if i > th:
+            cnt += 1
+        if i > 2 * th:
+            cnt2 += 1
     sz = len(guess)
+
+    if (sz == 0):
+        return min(wallet, random.randint(0, 5))
+
     if (sz > 0):
         res = max(set(guess), key=guess.count)
 
-    if (sz == 2 and guess.count(res) == 2 and guess[0] >= 2 * th):
+    if (sz >= 2 and sz <= 4 and cnt2 == sz and z[0] >= wallet):
         return 0
-    if (sz == 0):
-        return min(wallet, random.randint(0, 5))
+
+    if (sz >= 7 and 5 * cnt >= sz * 4):
+        return min(wallet, z[0] + 1, th)
+
+
     res = min(res, z[0])
     if (wallet >= res + 1 and res + 1 <= th):
         return res + 1
@@ -162,6 +176,17 @@ def vivek_troll00(wallet, history):
     return min(history[0][0]+1, wallet)
   return min(random.randint(6, 7), wallet)
 
+#plot to destroy best bot
+def killreveng (wallet, history):
+    z = wins(wallet, history)
+    sz = len(history)
+
+    res = z[0]
+    if (sz <= 2):
+        return min(wallet, 2 * th + 1)
+
+    return min(wallet, res + 1, 7)
+#actually dumber version of reveng
 def revengsmart (wallet, history):
     z = wins(wallet, history)
     res = 100
@@ -177,13 +202,12 @@ def revengsmart (wallet, history):
 
     return min(wallet, res + 1, 7)
 
+#attempt to troll good strategies by providing horrible data
 def scare(wallet, history):
     z = wins(wallet, history)
     if (len(history) <= 3):
         return min(wallet, th)
     res = z[0]
-
-
 
     return min(wallet, res + 1, 8)
 
@@ -207,8 +231,8 @@ def get_strategies():
 
     In the official grader, only the first element of the list will be used as your strategy. 
     """
-    strategies = [reveng, smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
-                  consrand2, seven, powers, fifth, conspow, tenth, six, eight, seventh, eighth, ninth, smart, five, smarterseven, revengsmart, scare]
+    strategies = [reveng, vivek_troll00, smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
+                  consrand2, seven, powers, fifth, conspow, tenth, six, eight, seventh, eighth, ninth, smart, five, smarterseven, revengsmart, scare, killreveng]
 
 
 
