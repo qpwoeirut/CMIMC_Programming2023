@@ -129,11 +129,71 @@ def smartseven(wallet, history):
 
     return min(wallet, z[0] + 1, 7)
 
+def five(wallet, history):
+    z = wins(wallet, history)
+
+    return min(wallet, 5)
+
+#take opponents maximum frequency guess + 1 if below the threshold, otherwise take 7
+def reveng (wallet, history):
+    z = wins(wallet, history)
+    res = 100
+    guess = []
+    for i,j in history:
+        guess.append(i)
+    sz = len(guess)
+    if (sz > 0):
+        res = max(set(guess), key=guess.count)
+
+    if (sz == 2 and guess.count(res) == 2 and guess[0] >= 2 * th):
+        return 0
+    if (sz == 0):
+        return min(wallet, random.randint(0, 5))
+    res = min(res, z[0])
+    if (wallet >= res + 1 and res + 1 <= th):
+        return res + 1
+    return min(wallet, res + 1, 7)
+
+#troll bot from LIT server
+def vivek_troll00(wallet, history):
+  if len(history) <= 0:
+    return min(random.randint(6, 7), wallet)
+  if history[0][0] < 4:
+    return min(history[0][0]+1, wallet)
+  return min(random.randint(6, 7), wallet)
+
+def revengsmart (wallet, history):
+    z = wins(wallet, history)
+    res = 100
+    guess = []
+    for i,j in history:
+        guess.append(i)
+    sz = len(guess)
+    if (sz > 0):
+        res = max(set(guess), key=guess.count)
+    res = min(res, z[0])
+    if guess.count(res) >= sz/3 and wallet >= res + 1 and res + 1 <= th:
+        return res + 1
+
+    return min(wallet, res + 1, 7)
+
+def scare(wallet, history):
+    z = wins(wallet, history)
+    if (len(history) <= 3):
+        return min(wallet, th)
+    res = z[0]
+
+
+
+    return min(wallet, res + 1, 8)
+
 def gambler(wallet, history):
     return random.randint(0, wallet)
 
 def villain(wallet, history):
     return max(wallet - 1, 0)
+
+
 
 
 # Edit me!
@@ -147,8 +207,8 @@ def get_strategies():
 
     In the official grader, only the first element of the list will be used as your strategy. 
     """
-    strategies = [smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
-                  consrand2, seven, powers, fifth, conspow, tenth, six, eight, seventh, eighth, ninth, smart, smarterseven]
+    strategies = [reveng, smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
+                  consrand2, seven, powers, fifth, conspow, tenth, six, eight, seventh, eighth, ninth, smart, five, smarterseven, revengsmart, scare]
 
 
 
