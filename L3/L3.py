@@ -26,6 +26,7 @@ MAXTIME = 10000
 MAXGRID = 100
 MAXM = 10
 
+counter = 0
 class data:
     def __init__(self, value, x, y, direc):
         self.value, self.x, self.y, self.direc = value, x, y, direc
@@ -42,7 +43,7 @@ class data:
 
     def str(self):
         return "Number [" + ",".join(str(x) for x in self.value) + "] on square (" + str(self.x) + "," + str(self.y)  \
-                + "), traveling in direction " + str(self.direc)
+                + "), traveling in direction " + str(self.direc) + ", counter = " + str(counter)
 
 def primefactor(a):
     assert(a <= MAXNUM)
@@ -55,6 +56,7 @@ def primefactor(a):
     return out
 
 def main():
+    global counter
     debug = False
     extended = False
     code = ""
@@ -214,7 +216,7 @@ def main():
                     continue
 
                 elif M.x >= height or M.x < 0 or M.y >= width or M.y < 0:
-                    print(loc + " Number out of bounds.", file=sys.stderr)
+                    print(loc + " Number out of bounds at coordinates (" + str(M.x) + ", " + str(M.y) + ").", file=sys.stderr)
                     runerror = True
                     break
 
