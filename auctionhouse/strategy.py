@@ -7,8 +7,8 @@ import random
 # 2 example strategies to use in your tournament.
 
 
-th = 10
-
+th = 12
+a = []
 def wins(wallet, history):
     sm = 100
     l = 0
@@ -18,6 +18,12 @@ def wins(wallet, history):
             l += 1
     return sm, l
 
+def getmed():
+    a.sort()
+    n = len(a)
+    if (n == 0):
+        return 10
+    return a[n//2]
 
 # conservatively destroy other teams (if 3 losses + less than threshold)
 def consdest(wallet, history):
@@ -137,21 +143,30 @@ def five(wallet, history):
 #take opponents maximum frequency guess + 1 if below the threshold, otherwise take 7
 def reveng (wallet, history):
     z = wins(wallet, history)
+  #  for i,j in history:
+   #     if j == True:
+    #        a.append(i)
+    #th = 2 * getmed()
     res = 100
     guess = []
     cnt = 0
     cnt2 = 0
-
+    mx = 0
     for i,j in history:
         guess.append(i)
         if i > th:
             cnt += 1
         if i > 2 * th:
             cnt2 += 1
+        if i > mx:
+            mx = i
     sz = len(guess)
 
     if (sz == 0):
-        return min(wallet, random.randint(0, 5))
+        return min(wallet, random.randint(0, 3))
+
+    if (wallet > mx and sz >= 4 and mx <= 3):
+        return mx + 1
 
     if (sz > 0):
         res = max(set(guess), key=guess.count)
@@ -161,6 +176,7 @@ def reveng (wallet, history):
 
     if (sz >= 7 and 5 * cnt >= sz * 4):
         return min(wallet, z[0] + 1, th)
+
 
 
     res = min(res, z[0])
