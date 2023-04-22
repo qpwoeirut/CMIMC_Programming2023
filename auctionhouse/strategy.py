@@ -149,6 +149,8 @@ def troll(wallet, history):
 
     return min(wallet, 1)
 
+def half (wallet, history):
+    return wallet //2
 
 #take opponents maximum frequency guess + 1 if below the threshold, otherwise take 7
 def reveng (wallet, history):
@@ -175,8 +177,6 @@ def reveng (wallet, history):
     if (sz == 0):
         return min(wallet, random.randint(1, 3))
 
-    if (wallet > mx and sz >= 4 and mx <= 3):
-        return mx + 1
 
     if (sz > 0):
         res = max(set(guess), key=guess.count)
@@ -258,7 +258,7 @@ def get_strategies():
     In the official grader, only the first element of the list will be used as your strategy. 
     """
     strategies = [reveng, vivek_troll00, smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
-                  consrand2, seven, powers, fifth, conspow, tenth, six, eight, seventh, eighth, ninth, smart, five, smarterseven, revengsmart, scare, killreveng, troll]
+                  consrand2, seven, powers, fifth, conspow, tenth, six, eight, seventh, eighth, ninth, smart, five, smarterseven, revengsmart, scare, killreveng, troll, half]
 
 
 
