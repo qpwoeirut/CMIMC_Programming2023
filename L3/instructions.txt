@@ -1,0 +1,10 @@
+To locally test L3, save your program as a comma delimited csv file. See exampleB.csv and exampleC.csv for how your L3 code should be formatted.
+
+To run a simulation, run the following command in your terminal:
+python3 L3.py -c code.csv -t testnumber
+
+To enable debugging, add a -d flag. For example, this command runs your code in code.csv on task 1 with debugging:
+python3 L3.py -c code.csv -t 1 -d
+
+For tasks 7-11, you should be running in L3X, which requires the -x flag. For example, this command runs your code in code.csv on task 7 in L3X with debugging:
+python3 L3.py -c code.csv -t 1 -d -x

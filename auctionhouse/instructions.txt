@@ -1,0 +1,6 @@
+To locally test Auction House, write as many strategy functions as you'd like in the strategy.py file---ensure that each function follows the example strategies (gambler, villain).
+Once you've written your strategy functions, include all of the strategy functions you'd like to test in the strategies list in the get_strategies function. 
+To run a simulation of 100 tournaments, run the following command in your terminal:
+python3 main.py -d -n 100
+
+To submit your strategy, submit the strategy.py file and ensure that the strategy you want graded is the *first element* of the strategies list---no other strategy in the list will be considered.

@@ -1,0 +1,10 @@
+To locally test Two Maze, write your Carnegie/Mellon functions in carnegie.py and mellon.py---ensure that each function is pure, and that the number of the function corresponds to the pattern it is designed for.
+
+To run a simulation with a randomly generated maze, run the following command in your terminal
+python3 main.py -p 1
+
+Replace the 1 after -p with 2 or 3 for the different maze patterns. Run 
+python3 main.py -p 1 -d
+to receive debugging information, including the maze and states of the robot. 
+
+To submit your strategy, submit carnegie.py and mellon.py.

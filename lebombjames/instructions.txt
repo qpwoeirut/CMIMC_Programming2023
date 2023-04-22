@@ -1,0 +1,11 @@
+To locally test Lebomb James, write as many strategy functions as you'd like in the strategy.py file---ensure that each function follows the example strategies (strategy, random_strategy).
+Once you've written your strategy functions, include all of the strategy functions you'd like to test in the strategies list in the get_strategies function. Include exactly five stragegies in the list. In the local tester, all of the strategies will be used as separate players in the game.
+
+To run a simulation, run the following command in your terminal:
+python main.py -d -s
+Using the -d option will enable debugging (prints exceptions if your output is invalid)
+Using the -s option will save the result of the current game in `history.game`
+
+To submit your strategy, submit the strategy.py file and ensure that the strategy you want graded is the *first element* of the strategies list---no other strategy in the list will be considered.
+
+To visualize a Lebomb James game, open visualizer.py and read the instructions.
