@@ -200,7 +200,12 @@ def get_strategies():
 
     In the official grader, only the first element of the list will be used as your strategy. 
     """
-    strategies = [offset_pattern_strategy, grid_pattern_strategy, lurking_strategy, random_strategy, random_border_strategy]
+    all_strategies = [
+        offset_pattern_strategy, grid_pattern_strategy, two_row_pattern_strategy,
+        lurking_strategy, random_lurking_strategy, distancing_strategy, random_distancing_strategy,
+        random_strategy, random_border_strategy, random_corner_strategy
+    ]
+    strategies = [offset_pattern_strategy] + [random.choice(all_strategies) for _ in range(4)]
 
     return strategies
 
@@ -208,8 +213,10 @@ def get_strategies():
 def main():
     from lebombjames.grader import LebombJamesGrader
     grader = LebombJamesGrader(True, False)
-    grader.grade()
-    grader.print_result()
+
+    for _ in range(10):
+        grader.grade()
+        grader.print_result()
 
 
 if __name__ == "__main__":

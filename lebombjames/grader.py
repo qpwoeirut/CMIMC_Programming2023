@@ -40,6 +40,8 @@ class LebombJamesGrader:
         """
         grid = Grid()
         strategies = get_strategies()
+        if self.debug:
+            print([strategy.__name__ for strategy in strategies])
         assert len(strategies) == 5, "Must have 5 strategies"
 
         for _ in range(self.TURNS):
