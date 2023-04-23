@@ -22,11 +22,14 @@ This can be implemented with a very low clock cost: each move only requires poss
 For patterns 1 and 2, the solution greedily goes up and right, backtracking cell-by-cell if it gets stuck and can't move.
 Once it reaches either far wall of the maze (x=31 or y=31), it starts following the wall.
 
-Submitted code is stored in [`carnegie.py`](/twomaze/carnegie.py) and [`mellon.py`](/twomaze/mellon.py).
+Submitted code is stored in the [`submission`](/twomaze/submission) folder.
 This code has a lot of duplicate functions and constants between the two files since I'm not sure if we're allowed to import between files or have *any* global variables at all, even if they're constant.
-The solution code for editing is in the [`working_solutions`](/twomaze/working_solutions) folder.
+The n<sup>th</sup> submission is in `[n]_carnegie.py` and `[n]_mellon.py`, except for the first submission, which wasn't saved.
 
-## Local results
+## Results
+First submission: `1435234 (14650, 20287, 108587)`
+
+Second submission: `125297 (14317, 20105, 90875)`
 ```
 python3 main.py -p 1 -n 10000
 10000 runs: mean=1306.2667, stddev=505.1118, stderr=5.0511. Took 50.7334s.
@@ -38,6 +41,14 @@ python3 main.py -p 3 -n 500
 500 runs: mean=9091.428, stddev=3960.4444, stderr=177.1165. Took 72.5968s.
 ```
 
-## Submission results
-First submission: 1435234 (14650, 20287, 108587)
-Second submission: 125297 (14317, 20105, 90875)
+Third submission: `121519 (13003, 17641, 90875)`
+```
+python3 main.py -p 1 -n 10000
+10000 runs: mean=1160.9801, stddev=511.9006, stderr=5.119. Took 51.3249s.
+
+python3 main.py -p 2 -n 5000
+5000 runs: mean=1669.3522, stddev=772.4428, stderr=10.924. Took 67.8052s.
+
+python3 main.py -p 3 -n 500
+500 runs: mean=9291.52, stddev=4023.973, stderr=179.9575. Took 71.6458s.
+```

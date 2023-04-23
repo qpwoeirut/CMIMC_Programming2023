@@ -1,11 +1,3 @@
-CARNEGIE_MOVES = "DU"
-MELLON_MOVES = "LR"
-MAZE_SIZE = 32
-VIEW_SIZE = 8
-
-WALL_FOLLOW_SIGNAL = 1 << 5 + 5
-
-
 def pack_move(move: int, stuck: int) -> int:
     return ((stuck ^ 1) << 4) | (move + 1)  # move is always in [-1, 7]
 
@@ -40,6 +32,9 @@ def calculate_visited(movements: list[str]) -> tuple[set[tuple[int, int]], set[t
 
 
 def calculate_movements(clock_times: list[int]) -> tuple[list[str], list[str]]:
+    CARNEGIE_MOVES = "DU"
+    MELLON_MOVES = "LR"
+
     moves = [unpack_move(clock - 5)[0] for clock in clock_times]
     movements = []
     raw_movements = []
@@ -71,6 +66,12 @@ Mellon (x movement) will only activate wall following when x=31, so that Carnegi
 
 
 def carnegie_1(x: int, y: int, walls_horizontal: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
+    CARNEGIE_MOVES = "DU"
+    MAZE_SIZE = 32
+    VIEW_SIZE = 8
+
+    WALL_FOLLOW_SIGNAL = 1 << 5 + 5
+
     max_clock = max(clock_times)
     if max_clock >= WALL_FOLLOW_SIGNAL:
         return carnegie_wall_following(x, y, walls_horizontal, clock_times, right_wall=max_clock & 1)
@@ -113,6 +114,11 @@ def carnegie_3(x: int, y: int, walls_horizontal: list[list[int]], clock_times: l
 
 
 def carnegie_wall_following(x: int, y: int, walls_horizontal: list[list[int]], clock_times: list[int], right_wall: int) -> tuple[int, int]:
+    MAZE_SIZE = 32
+    VIEW_SIZE = 8
+
+    WALL_FOLLOW_SIGNAL = 1 << 5 + 5
+
     if x == MAZE_SIZE - 1:  # check if we can reach the end in this next move, just in case
         dy = 0
         while y + dy < MAZE_SIZE - 1 and dy < 7:
@@ -137,14 +143,3 @@ def carnegie_wall_following(x: int, y: int, walls_horizontal: list[list[int]], c
 
     next_dir = (current_dir if dy == 0 else current_dir ^ 1) ^ right_wall
     return dy, next_dir + 5
-
-
-def main():
-    from twomaze.grader import TwoMazeGrader
-    grader = TwoMazeGrader(2, True)
-    grader.grade()
-    grader.print_result()
-
-
-if __name__ == "__main__":
-    main()

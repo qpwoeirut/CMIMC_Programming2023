@@ -180,6 +180,7 @@ class TwoMazeGrader:
         try:
             self.result = self._grade_maze()
         except Exception as e:
+            raise e
             self.result = repr(e)
 
     def print_result(self) -> None:
