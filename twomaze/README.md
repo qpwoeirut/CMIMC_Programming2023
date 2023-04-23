@@ -37,3 +37,7 @@ python3 main.py -p 2 -n 5000
 python3 main.py -p 3 -n 500
 500 runs: mean=9091.428, stddev=3960.4444, stderr=177.1165. Took 72.5968s.
 ```
+
+## Submission results
+First submission: 1435234 (14650, 20287, 108587)
+Second submission: 125297 (14317, 20105, 90875)
