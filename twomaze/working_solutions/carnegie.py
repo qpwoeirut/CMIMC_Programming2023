@@ -115,7 +115,16 @@ def carnegie_3(x: int, y: int, walls_horizontal: list[list[int]], clock_times: l
 
 
 def carnegie_wall_following(x: int, y: int, walls_horizontal: list[list[int]], clock_times: list[int], right_wall: int) -> tuple[int, int]:
-    # TODO check if end is in sight
+    if x == MAZE_SIZE - 1:  # check if we can reach the end in this next move, just in case
+        dy = 0
+        while y + dy < MAZE_SIZE - 1 and dy < 7:
+            if walls_horizontal[VIEW_SIZE][VIEW_SIZE + dy + 1] == 1:
+                break
+            dy += 1
+        if y + dy == MAZE_SIZE - 1:
+            return dy, 5
+
+
     if clock_times[-1] == 0 or clock_times[-1] >= WALL_FOLLOW_SIGNAL:
         current_dir = 0  # start going up
     else:

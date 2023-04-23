@@ -41,6 +41,16 @@ def mellon_3(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[
 
 
 def mellon_wall_following(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[int], right_wall: int) -> tuple[int, int]:
+    if y == MAZE_SIZE - 1:  # check if we can reach the end in this next move, just in case
+        dx = 0
+        while x + dx < MAZE_SIZE - 1 and dx < 7:
+            if walls_vertical[VIEW_SIZE + dx + 1][VIEW_SIZE] == 1:
+                break
+            dx += 1
+        if x + dx == MAZE_SIZE - 1:
+            return dx, 5
+
+
     if clock_times[-1] < 5 or clock_times[-1] >= WALL_FOLLOW_SIGNAL:
         current_dir = 0  # start going right
     else:

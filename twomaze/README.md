@@ -28,12 +28,12 @@ The solution code for editing is in the [`working_solutions`](/twomaze/working_s
 
 ## Local results
 ```
-python3 main.py -p 1 -n 1000
-Average across 1000 runs: 1333.861
+python3 main.py -p 1 -n 10000
+10000 runs: mean=1306.2667, stddev=505.1118, stderr=5.0511. Took 50.7334s.
 
-python3 main.py -p 2 -n 1000
-Average across 1000 runs: 1991.536
+python3 main.py -p 2 -n 5000
+5000 runs: mean=1968.7766, stddev=873.1762, stderr=12.3486. Took 68.8361s.
 
-python3 main.py -p 3 -n 100 
-Average across 100 runs: 10068.09
+python3 main.py -p 3 -n 500
+500 runs: mean=9091.428, stddev=3960.4444, stderr=177.1165. Took 72.5968s.
 ```
