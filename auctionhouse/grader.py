@@ -18,7 +18,7 @@ class AuctionHouseGrader:
         :param int num_tournaments: number of tournaments to run
         """
         strategies = get_strategies()
-        self.bidders = [(strategy.__name__, strategy) for strategy in strategies]
+        self.bidders = [(f"{strategy.__name__} #{i}", strategy) for i, strategy in enumerate(strategies)]
         self.num_tournaments = num_tournaments
 
         self.debug = debug
