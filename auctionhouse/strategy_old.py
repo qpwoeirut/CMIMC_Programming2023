@@ -7,7 +7,7 @@ import random
 # 2 example strategies to use in your tournament.
 
 
-
+th = 12
 a = []
 c = 0
 cur = 0
@@ -33,7 +33,6 @@ def getmed():
 
 # conservatively destroy other teams (if 3 losses + less than threshold)
 def consdest(wallet, history):
-    th = 12
     z = wins(wallet, history)
     if (z[0] < th) and (z[1] >= 3):
         return z[0] + 1
@@ -48,7 +47,6 @@ def cons(wallet, history):
 
 # attack other teams (if less than threshold)
 def consatk(wallet, history):
-    th = 12
     z = wins(wallet, history)
     if z[0] < th:
         return z[0] + 1
@@ -63,13 +61,11 @@ def atk(wallet, history):
 
 # random under threshold
 def consrand(wallet, history):
-    th = 12
     return min(wallet, random.randint(0, th))
 
 
 # random under threshold but above 5
 def consrand2(wallet, history):
-    th = 12
     return min(wallet, random.randint(th / 2, th))
 
 
@@ -113,6 +109,15 @@ def conspow(wallet, history):
     z = len(history)
     return min(wallet, 20, pow(2, z))
 
+#takes risk in the first 4 turns
+riskvar = 0
+def calcrisk (wallet, history):
+    z = wins(wallet, history)
+    global riskvar
+    if (riskvar > 10):
+        return min(wallet,z[0] + 1, 2)
+    return min(wallet,z[0] + 1, 9)
+
 # always guess 7
 def seven(wallet, history):
     return min(wallet, 7)
@@ -147,7 +152,7 @@ def smart(wallet, history):
 # bet seven + hope some other things work
 def smarterseven(wallet, history):
     z = wins(wallet, history)
-    th = 12
+
     if (z[1] == 4 and z[0] > 7):
         return min(wallet, random.randint(0, th))
 
@@ -167,13 +172,11 @@ def five(wallet, history):
     return min(wallet, 5)
 
 
-def risky(wallet, history):
+def risky (wallet, history):
     return min(wallet, random.randint(10, 15))
-
 
 # troll
 def troll(wallet, history):
-    th = 12
     z = wins(wallet, history)
     sz = len(history)
     if (sz >= 3):
@@ -185,63 +188,9 @@ def troll(wallet, history):
 def half(wallet, history):
     return wallet // 2
 
-
-def fifteen(wallet, history):
-    return min(wallet, 15)
-
-def betterthanreveng(wallet, history):
-    z = wins(wallet, history)
-    th = 10
-    guess = []
-    cnt = 0
-    cnt2 = 0
-    mx = 0
-    for i, j in history:
-        guess.append(i)
-        if i > th:
-            cnt += 1
-        if i > 2 * th:
-            cnt2 += 1
-        if i > mx:
-            mx = i
-
-    sz = len(history)
-
-    if wallet == 100:
-        return 1
-
-    if wallet == 99:
-        return 2
-
-    if wallet == 97:
-        return 16
-
-    if sz == 9 and wallet >= 70:
-        return 11
-
-    res = 100
-    if sz > 0:
-        res = max(set(guess), key=guess.count)
-
-    res = min(res, z[0])
-
-    #  if (sz >= 5 and res >= 2 * th and 5 * cnt2 >= 4 * sz):
-    #     return 0
-
-    # if (sz >= 10 and res >= th and 5 * cnt >= 4 * sz):
-    #   return 0
-    if (wallet >= res + 1 and res + 1 <= th):
-        return res + 1
-
-    return min(wallet, random.randint(0, th))
-
-
 turns = 0
-
-
 # take opponents maximum frequency guess + 1 if below the threshold, otherwise take 7
 def reveng(wallet, history):
-    th = 12
     z = wins(wallet, history)
     #  for i,j in history:
     #     if j == True:
@@ -291,7 +240,6 @@ def vivek_troll00(wallet, history):
 
 # plot to destroy best bot
 def killreveng(wallet, history):
-    th = 12
     z = wins(wallet, history)
     sz = len(history)
 
@@ -312,14 +260,12 @@ def pluw(wallet, history):
     sz = len(history)
     global val
     if (sz % 3 == 0):
-        val = min(wallet, (wallet + 9) // 10)
+         val = min(wallet, (wallet + 9) // 10)
     return val
-
 
 # actually dumber version of reveng
 def revengsmart(wallet, history):
     z = wins(wallet, history)
-    th = 12
     res = 100
     guess = []
     for i, j in history:
@@ -336,7 +282,6 @@ def revengsmart(wallet, history):
 
 # attempt to troll good strategies by providing horrible data
 def scare(wallet, history):
-    th = 12
     z = wins(wallet, history)
     if (len(history) <= 3):
         return min(wallet, th)
@@ -367,14 +312,13 @@ def get_strategies():
     Returns a list of strategy functions to use in a tournament.
 
     In the local tester, all of the strategies will be used as separate bidders in the tournament.
-    Note that strategies are tracked by their function name for readability in the results, so
+    Note that strategies are tracked by their function name for readability in the results, so 
     adding the same function multiple times will not simulate multiple bidders using the same strategy.
 
-    In the official grader, only the first element of the list will be used as your strategy.
+    In the official grader, only the first element of the list will be used as your strategy. 
     """
-    strategies = [betterthanreveng, vivek_troll00, smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
+    strategies = [reveng, vivek_troll00, smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
                   consrand2, seven, powers, fifth, conspow, tenth, six, eight, seventh, eighth, ninth, smart,
-                  five, smarterseven, revengsmart, scare, killreveng, troll, half, low, pluw, risky,
-                  reveng, fifteen]
+                  five, smarterseven, revengsmart, scare, killreveng, troll, half, low, pluw, risky, calcrisk]
 
     return strategies
