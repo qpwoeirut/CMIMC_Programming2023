@@ -191,7 +191,7 @@ def fifteen(wallet, history):
 
 def betterthanreveng(wallet, history):
     z = wins(wallet, history)
-    th = 10
+    th = 8
     guess = []
     cnt = 0
     cnt2 = 0
@@ -216,9 +216,6 @@ def betterthanreveng(wallet, history):
     if wallet == 97:
         return 16
 
-    if sz == 9 and wallet >= 70:
-        return 11
-
     res = 100
     if sz > 0:
         res = max(set(guess), key=guess.count)
@@ -229,11 +226,12 @@ def betterthanreveng(wallet, history):
     #     return 0
 
     # if (sz >= 10 and res >= th and 5 * cnt >= 4 * sz):
-    #   return 0
+    #     return 0
+
     if (wallet >= res + 1 and res + 1 <= th):
         return res + 1
 
-    return min(wallet, random.randint(0, th))
+    return min(wallet, 3)
 
 
 turns = 0
@@ -372,9 +370,9 @@ def get_strategies():
 
     In the official grader, only the first element of the list will be used as your strategy.
     """
-    strategies = [betterthanreveng, vivek_troll00, smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
+    strategies = [reveng, betterthanreveng, vivek_troll00, smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
                   consrand2, seven, powers, fifth, conspow, tenth, six, eight, seventh, eighth, ninth, smart,
                   five, smarterseven, revengsmart, scare, killreveng, troll, half, low, pluw, risky,
-                  reveng, fifteen]
+                  fifteen]
 
     return strategies
