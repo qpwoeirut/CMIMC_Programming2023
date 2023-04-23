@@ -43,6 +43,7 @@ def calculate_movements(clock_times: list[int]) -> list[str]:
     return raw_movements
 
 
+# this strategy has a very good median score but also gets stuck and dies sometimes. decided not to submit it.
 def carnegie_1(x: int, y: int, walls_horizontal: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
     max_clock = max(clock_times)
     if max_clock >= WALL_FOLLOW_SIGNAL:
@@ -55,7 +56,7 @@ def carnegie_1(x: int, y: int, walls_horizontal: list[list[int]], clock_times: l
     carnegie_visited, _ = calculate_visited(movements)
 
     dy = 0
-    if (x, y + 1) not in carnegie_visited:
+    if (x, y + 1) not in carnegie_visited or (len(clock_times) >= 5 and set(clock_times) == {6}):
         dy = carnegie_greedy(y, walls_horizontal, 0)
     if dy == 0 and carnegie_greedy(y, walls_horizontal, 1) <= -1:
         dy = -1

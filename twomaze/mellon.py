@@ -1,6 +1,7 @@
 from carnegie import *
 
 
+# this strategy has a very good median score but also gets stuck and dies sometimes. decided not to submit it.
 def mellon_1(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
     max_clock = max(clock_times)
     if max_clock >= WALL_FOLLOW_SIGNAL:
@@ -13,7 +14,7 @@ def mellon_1(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[
     _, mellon_visited = calculate_visited(movements)
 
     dx = 0
-    if (x + 1, y) not in mellon_visited:
+    if (x + 1, y) not in mellon_visited or (len(clock_times) >= 5 and set(clock_times) == {6}):
         dx = mellon_greedy(y, walls_vertical, 0)
     if dx == 0 and mellon_greedy(y, walls_vertical, 1) <= -1:
         dx = -1
