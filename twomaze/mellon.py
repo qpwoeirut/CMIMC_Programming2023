@@ -54,5 +54,4 @@ def mellon_wall_following(x: int, y: int, walls_vertical: list[list[int]], clock
         raise ValueError(f"current_dir={current_dir}, clock_times[-1]={clock_times[-1]}")
 
     next_dir = (current_dir ^ 1 if dx == 0 else current_dir) ^ right_wall
-    print(current_dir ^ 1 if dx == 0 else current_dir, next_dir, right_wall)
     return dx, next_dir + 5
