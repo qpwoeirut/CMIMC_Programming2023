@@ -189,13 +189,45 @@ def half(wallet, history):
 def fifteen(wallet, history):
     return min(wallet, 15)
 
+def largeatfirst (wallet, history):
+    if (wallet == 100):
+        return 20
+    if (wallet == 80):
+        return 2
+    if (wallet == 78):
+        return 20
+    if (wallet == 58):
+        return 20
+    if (wallet == 38):
+        return 10
+    return 4
+
+cturns = 0
+def zeroinitial (wallet, history):
+    global cturns
+    cturns += 1
+    if (cturns == 1):
+        return 0
+    if (cturns == 2):
+        return 0
+    if (cturns == 3):
+        return 0
+    if (cturns == 4):
+        return 30
+    if (cturns == 5):
+        return 30
+    return min(wallet, 8)
+
+turns = 0
 def betterthanreveng(wallet, history):
     z = wins(wallet, history)
-    th = 8
+    th = 12
     guess = []
     cnt = 0
     cnt2 = 0
     mx = 0
+    global turns
+    turns += 1
     for i, j in history:
         guess.append(i)
         if i > th:
@@ -207,34 +239,49 @@ def betterthanreveng(wallet, history):
 
     sz = len(history)
 
-    if wallet == 100:
-        return 1
+    if turns == 1:
+        return 0
 
-    if wallet == 99:
-        return 2
+    if turns == 2:
+        return 21
 
-    if wallet == 97:
-        return 16
+    if turns == 3:
+        return 17
+
+    if turns == 4:
+        return 13
 
     res = 100
+
+    guess.sort()
     if sz > 0:
-        res = max(set(guess), key=guess.count)
+        res = guess[sz//2]
 
     res = min(res, z[0])
 
+    #if we've played 8 turns, the player we are playing against is considered to be a conservative player
     #  if (sz >= 5 and res >= 2 * th and 5 * cnt2 >= 4 * sz):
     #     return 0
 
     # if (sz >= 10 and res >= th and 5 * cnt >= 4 * sz):
     #     return 0
 
+
+
     if (wallet >= res + 1 and res + 1 <= th):
         return res + 1
 
-    return min(wallet, 3)
+    if (turns <= 6 and cnt2 * 2 >= turns):
+        par = random.randint(0,1)
+        if (par % 2):
+            return min(wallet, res + 1)
+        return 0
 
+    if (wallet >= th and z[0] <= 2 * th):
+          return th
 
-turns = 0
+    return min(wallet, res + 1, th//2)
+
 
 
 # take opponents maximum frequency guess + 1 if below the threshold, otherwise take 7
@@ -315,8 +362,13 @@ def pluw(wallet, history):
 
 
 # actually dumber version of reveng
+gtturns = 0
 def revengsmart(wallet, history):
     z = wins(wallet, history)
+    global gtturns
+    gtturns += 1
+    if (gtturns == 0):
+        return 0
     th = 12
     res = 100
     guess = []
@@ -329,8 +381,20 @@ def revengsmart(wallet, history):
     if guess.count(res) >= sz / 3 and wallet >= res + 1 and res + 1 <= th:
         return res + 1
 
+    if wallet >= res + 1 and res + 1 <= th:
+        par = random.randint(0,1)
+        if (par % 2):
+            return res + 1
+
     return min(wallet, res + 1, 7)
 
+def copycat(wallet, history):
+
+    z = wins(wallet, history)
+    sz = len(history)
+    if (sz == 0):
+        return 0
+    return min(wallet, z[0] + 1, history[sz-1][0] + 1)
 
 # attempt to troll good strategies by providing horrible data
 def scare(wallet, history):
@@ -346,6 +410,9 @@ def scare(wallet, history):
 def gambler(wallet, history):
     return random.randint(0, wallet)
 
+def gambleragain(wallet, history):
+    return min(wallet, random.randint(10, 30))
+
 
 def low(wallet, history):
     z = wins(wallet, history)
@@ -358,7 +425,13 @@ def low(wallet, history):
 def villain(wallet, history):
     return max(wallet - 1, 0)
 
-
+def mixed (wallet, history):
+    par = random.randint(0,30)
+    if par == 4:
+        return zeroinitial(wallet, history)
+    if par == 7:
+        return copycat(wallet, history)
+    return betterthanreveng(wallet,history)
 # Edit me!
 def get_strategies():
     """
@@ -370,9 +443,11 @@ def get_strategies():
 
     In the official grader, only the first element of the list will be used as your strategy.
     """
-    strategies = [reveng, betterthanreveng, vivek_troll00, smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
-                  consrand2, seven, powers, fifth, conspow, tenth, six, eight, seventh, eighth, ninth, smart,
+    strategies = [betterthanreveng, copycat,zeroinitial,
+                  vivek_troll00, smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
+                consrand2, seven, powers, fifth, conspow, tenth, six, eight, seventh, eighth, ninth, smart,
                   five, smarterseven, revengsmart, scare, killreveng, troll, half, low, pluw, risky,
-                  fifteen]
+                 fifteen, reveng, zeroinitial,gambleragain,
+                  largeatfirst, mixed] + ([largeatfirst]) * 100 + ([zeroinitial]) * 10 + ([copycat]) * 10
 
     return strategies
