@@ -1,37 +1,47 @@
+from carnegie import *
+
+
 # The function called for maze pattern 1
 def mellon_1(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
-    MAZE_SIZE = 32
-    VIEW_SIZE = 8
+    max_clock = max(clock_times)
+    if max_clock >= WALL_FOLLOW_SIGNAL:
+        return mellon_wall_following(x, y, walls_vertical, clock_times, right_wall=max_clock & 1)
 
-    # Greedily move right
-    steps = 0
-    while x + steps < MAZE_SIZE - 1 and steps < 7:
-        if walls_vertical[VIEW_SIZE + steps + 1][VIEW_SIZE] == 1:
-            break
-        steps = steps + 1
+    if x == MAZE_SIZE - 1:
+        return 0, WALL_FOLLOW_SIGNAL + 1  # add 1 to signal right-wall following, not left-wall following
 
-    return steps, 5
+    movements, raw_movements = calculate_movements(clock_times)
+    carnegie_visited, mellon_visited = calculate_visited(raw_movements)
+
+    _, carnegie_stuck = unpack_move(clock_times[-1] - 5)
+    dx = 0
+    mellon_stuck = 1
+    if (x + 1, y) not in mellon_visited:
+        mellon_stuck = 0
+        while x + dx < MAZE_SIZE - 1 and dx < 7:
+            if walls_vertical[VIEW_SIZE + dx + 1][VIEW_SIZE] == 1:
+                mellon_stuck = 1
+                break
+            dx += 1
+            carnegie_stuck = 0  # once we start moving, we don't know if carnegie is stuck anymore
+
+    if carnegie_stuck and mellon_stuck:  # stuck mode
+        dx = -1 if movements[-1] in MELLON_MOVES else 0
+    return dx, pack_move(dx, mellon_stuck) + 5
+
 
 # The function called for maze pattern 2
 def mellon_2(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
-    MAZE_SIZE = 32
-    VIEW_SIZE = 8
+    return mellon_1(x, y, walls_vertical, clock_times)
 
-    # Greedily move right
-    steps = 0
-    while x + steps < MAZE_SIZE - 1 and steps < 7:
-        if walls_vertical[VIEW_SIZE + steps + 1][VIEW_SIZE] == 1:
-            break
-        steps = steps + 1
-
-    return steps, 5
 
 # The function called for maze pattern 3
 def mellon_3(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
-    MAZE_SIZE = 32
-    VIEW_SIZE = 8
+    return mellon_wall_following(x, y, walls_vertical, clock_times, right_wall=0)
 
-    if clock_times[-1] < 5:
+
+def mellon_wall_following(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[int], right_wall: int) -> tuple[int, int]:
+    if clock_times[-1] < 5 or clock_times[-1] >= WALL_FOLLOW_SIGNAL:
         current_dir = 0  # start going right
     else:
         current_dir = clock_times[-1] - 5  # 0 -> right, 1 -> left
@@ -41,7 +51,8 @@ def mellon_3(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[
     elif current_dir == 1:  # left
         dx = -1 if x > 0 and walls_vertical[VIEW_SIZE][VIEW_SIZE] == 0 else 0
     else:
-        raise ValueError("this should never happen")
+        raise ValueError(f"current_dir={current_dir}, clock_times[-1]={clock_times[-1]}")
 
-    next_dir = current_dir ^ 1 if dx == 0 else current_dir
+    next_dir = (current_dir ^ 1 if dx == 0 else current_dir) ^ right_wall
+    print(current_dir ^ 1 if dx == 0 else current_dir, next_dir, right_wall)
     return dx, next_dir + 5
