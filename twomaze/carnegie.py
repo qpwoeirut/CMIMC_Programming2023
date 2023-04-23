@@ -82,6 +82,9 @@ def carnegie_1(x: int, y: int, walls_horizontal: list[list[int]], clock_times: l
     if y == MAZE_SIZE - 1:
         return 0, WALL_FOLLOW_SIGNAL
 
+    if x == 0 and y == 0 and len(clock_times) >= 5:  # all the backtracking ended up with us at the start again >:(
+        return 0, WALL_FOLLOW_SIGNAL  # run wall following as a fallback; it'll get to the end eventually
+
 
     movements, raw_movements = calculate_movements(clock_times)
     carnegie_visited, mellon_visited = calculate_visited(raw_movements)
