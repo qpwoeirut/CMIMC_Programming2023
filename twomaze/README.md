@@ -16,15 +16,20 @@ Pattern 3 is an acyclic maze generated with DFS.
 Our overall solutions focus on minimizing the amount that the clock needs to be incremented per turn.
 Although the robot takes an inefficient path through the maze, the overall cost is cheap.
 
-Our solution for pattern 3 involves following the left wall until reaching the end.
-This can be implemented with a very low clock cost: each move only requires possibly sending a single bit.
-
-For patterns 1 and 2, the solution greedily goes up and right, backtracking cell-by-cell if it gets stuck and can't move.
-Once it reaches either far wall of the maze (x=31 or y=31), it starts following the wall.
-
 Submitted code is stored in the [`submission`](/twomaze/submission) folder.
 This code has a lot of duplicate functions and constants between the two files since I'm not sure if we're allowed to import between files or have *any* global variables at all, even if they're constant.
 The n<sup>th</sup> submission is in `[n]_carnegie.py` and `[n]_mellon.py`, except for the first submission, which wasn't saved.
+
+
+### Old solutions
+For patterns 1 and 2, the solution greedily goes up and right, backtracking cell-by-cell if it gets stuck and can't move.
+Once it reaches either far wall of the maze (x=31 or y=31), it starts following the wall.
+
+Our solution for pattern 3 involves following the left wall until reaching the end.
+This can be implemented with a very low clock cost: each move only requires possibly sending a single bit.
+
+### Current solutions
+All patterns are currently solved by following the wall, since it turns out that was more effective than the greedy strategy.
 
 ## Results
 First submission: `1435234 (14650, 20287, 108587)`
@@ -63,4 +68,16 @@ python3 main.py -p 2 -n 5000
 
 python3 main.py -p 3 -n 500
 500 runs: mean=8803.026, stddev=3962.0794, stderr=177.1896. Took 100.4248s.
+```
+
+Fifth submission: `106632 (6140, 13091, 87401)`
+```
+python3 main.py -p 1 -n 10000
+10000 runs: mean=653.9382, stddev=179.3878, stderr=1.7939. Took 111.3655s.
+
+python3 main.py -p 2 -n 5000
+5000 runs: mean=1310.8782, stddev=356.5757, stderr=5.0427. Took 98.4736s.
+
+python3 main.py -p 3 -n 500
+500 runs: mean=8899.648, stddev=3748.0715, stderr=167.6189. Took 69.1091s.
 ```

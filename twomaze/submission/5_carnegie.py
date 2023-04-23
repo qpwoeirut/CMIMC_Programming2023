@@ -1,10 +1,3 @@
-CARNEGIE_MOVES = "DU"
-MELLON_MOVES = "LR"
-MAZE_SIZE = 32
-VIEW_SIZE = 8
-
-WALL_FOLLOW_SIGNAL = 1 << 5 + 5
-
 def carnegie_1(x: int, y: int, walls_horizontal: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
     return carnegie_wall_following(x, y, walls_horizontal, clock_times, right_wall=0)
 
@@ -19,6 +12,9 @@ def carnegie_3(x: int, y: int, walls_horizontal: list[list[int]], clock_times: l
 
 
 def carnegie_greedy(y: int, walls_horizontal: list[list[int]], current_dir: int) -> int:
+    MAZE_SIZE = 32
+    VIEW_SIZE = 8
+
     dy = 0
     if current_dir == 0:  # up
         while y + dy < MAZE_SIZE - 1 and dy < 7:
@@ -34,6 +30,11 @@ def carnegie_greedy(y: int, walls_horizontal: list[list[int]], current_dir: int)
 
 
 def carnegie_wall_following(x: int, y: int, walls_horizontal: list[list[int]], clock_times: list[int], right_wall: int) -> tuple[int, int]:
+    MAZE_SIZE = 32
+    VIEW_SIZE = 8
+
+    WALL_FOLLOW_SIGNAL = 1 << 5 + 5
+
     if x == MAZE_SIZE - 1:  # check if we can reach the end in this next move, just in case
         dy = 0
         while y + dy < MAZE_SIZE - 1 and dy < 7:
@@ -53,11 +54,13 @@ def carnegie_wall_following(x: int, y: int, walls_horizontal: list[list[int]], c
     # if we're at the edge of the maze, we don't need to try and turn each time
     if x == 0 and current_dir ^ right_wall == 0:  # up + left wall or down + right wall
         dy = carnegie_greedy(y, walls_horizontal, current_dir)
-        return dy, (abs(dy) == 7) + 5  # if we've hit a wall, turn right immediately
+        if dy != 0:
+            return dy, (abs(dy) == 7) + 5  # if we've hit a wall, turn right immediately
 
     if x == MAZE_SIZE - 1 and current_dir ^ right_wall == 1:
         dy = carnegie_greedy(y, walls_horizontal, current_dir)
-        return dy, (abs(dy) != 7) + 5  # if we've hit a wall, turn left immediately
+        if dy != 0:
+            return dy, (abs(dy) != 7) + 5  # if we've hit a wall, turn left immediately
 
     if current_dir == 0:  # up
         dy = 1 if y + 1 < MAZE_SIZE and walls_horizontal[VIEW_SIZE][VIEW_SIZE + 1] == 0 else 0
@@ -66,14 +69,3 @@ def carnegie_wall_following(x: int, y: int, walls_horizontal: list[list[int]], c
 
     next_dir = (current_dir if dy == 0 else current_dir ^ 1) ^ right_wall
     return dy, next_dir + 5
-
-
-def main():
-    from twomaze.grader import TwoMazeGrader
-    grader = TwoMazeGrader(2, True)
-    grader.grade()
-    grader.print_result()
-
-
-if __name__ == "__main__":
-    main()
