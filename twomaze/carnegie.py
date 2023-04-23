@@ -103,12 +103,10 @@ def carnegie_1(x: int, y: int, walls_horizontal: list[list[int]], clock_times: l
     return dy, pack_move(dy, carnegie_stuck) + 5
 
 
-# The function called for maze pattern 2
 def carnegie_2(x: int, y: int, walls_horizontal: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
     return carnegie_1(x, y, walls_horizontal, clock_times)  # idk hopefully it works okay
 
 
-# The function called for maze pattern 3
 # classic wall-following strategy for mazes. maintain the direction we're going in and always turn left if possible
 def carnegie_3(x: int, y: int, walls_horizontal: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
     return carnegie_wall_following(x, y, walls_horizontal, clock_times, right_wall=0)
@@ -130,42 +128,6 @@ def carnegie_wall_following(x: int, y: int, walls_horizontal: list[list[int]], c
 
     next_dir = (current_dir if dy == 0 else current_dir ^ 1) ^ right_wall
     return dy, next_dir + 5
-
-
-# stuff I gave up on
-# if clock_times[-1] > 6:  # search mode
-#     walls = unpack(clock_times[-1] - 5)  # grid of whether there are walls up (0/1) and to the right (0/2), offset by `radius`
-#     radius = (len(walls) - 1) // 2
-#     for i in range(len(walls)):
-#         for j in range(len(walls[i])):
-#             walls[i][j] = walls[i][j] << 1 | walls_horizontal[VIEW_SIZE + i - radius][VIEW_SIZE + j - radius]
-#
-#     dy = bfs(walls)
-#     return dy,
-# else:  # greedy mode
-#     mellon_stuck = clock_times[-1] == 5  # stuck -> 5, free -> 6 since we'll probably be stuck most of the time
-#
-#     dy = 0
-#     carnegie_stuck = 0
-#     # it's possible carnegie moves to the end of its vision radius without getting stuck. in this case we tell mellon that carnegie isn't stuck
-#     while y + dy < MAZE_SIZE - 1 and dy < 7:
-#         if walls_horizontal[VIEW_SIZE][VIEW_SIZE + dy + 1] == 1:
-#             carnegie_stuck = 1
-#             break
-#         dy += 1
-#         mellon_stuck = 0  # once we start moving, we don't know if mellon would be stuck anymore
-#
-#     if carnegie_stuck and mellon_stuck:  # tell mellon to enter search mode
-#         radius = 2  # TODO increase radius if we stay stuck
-#         walls_to_send = [
-#             row[VIEW_SIZE - radius: VIEW_SIZE + radius + 1]
-#             for row in walls_horizontal[VIEW_SIZE - radius: VIEW_SIZE + radius + 1]
-#         ]
-#         packed_walls = pack(walls_to_send)  # receiver should be able to infer the radius from message size
-#
-#         return 0, packed_walls + 5
-#     else:
-#         return dy, 5 if carnegie_stuck else 6
 
 
 def main():

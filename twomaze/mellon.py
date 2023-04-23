@@ -1,7 +1,6 @@
 from carnegie import *
 
 
-# The function called for maze pattern 1
 def mellon_1(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
     max_clock = max(clock_times)
     if max_clock >= WALL_FOLLOW_SIGNAL:
@@ -30,12 +29,10 @@ def mellon_1(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[
     return dx, pack_move(dx, mellon_stuck) + 5
 
 
-# The function called for maze pattern 2
 def mellon_2(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
     return mellon_1(x, y, walls_vertical, clock_times)
 
 
-# The function called for maze pattern 3
 def mellon_3(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
     return mellon_wall_following(x, y, walls_vertical, clock_times, right_wall=0)
 
