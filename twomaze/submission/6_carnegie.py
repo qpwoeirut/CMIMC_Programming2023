@@ -1,8 +1,3 @@
-CARNEGIE_MOVES = "DU"
-MELLON_MOVES = "LR"
-MAZE_SIZE = 32
-VIEW_SIZE = 8
-
 def carnegie_1(x: int, y: int, walls_horizontal: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
     return carnegie_wall_following(x, y, walls_horizontal, clock_times)
 
@@ -17,6 +12,8 @@ def carnegie_3(x: int, y: int, walls_horizontal: list[list[int]], clock_times: l
 
 
 def carnegie_greedy(y: int, walls_horizontal: list[list[int]], current_dir: int) -> int:
+    VIEW_SIZE = 8
+
     dy = 0
     if current_dir == 0:  # up
         while dy < 7:
@@ -32,6 +29,8 @@ def carnegie_greedy(y: int, walls_horizontal: list[list[int]], current_dir: int)
 
 
 def compute_dy(y: int, walls_horizontal: list[list[int]], current_dir: int) -> int:
+    VIEW_SIZE = 8
+
     if current_dir == 0:  # up
         dy = 1 if walls_horizontal[VIEW_SIZE][VIEW_SIZE + 1] == 0 else 0
     else:  # current_dir == 1 -> down
@@ -40,6 +39,9 @@ def compute_dy(y: int, walls_horizontal: list[list[int]], current_dir: int) -> i
 
 
 def carnegie_wall_following(x: int, y: int, walls_horizontal: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
+    MAZE_SIZE = 32
+    VIEW_SIZE = 8
+
     if x == MAZE_SIZE - 1:  # check if we can reach the end in this next move, just in case
         dy = 0
         while dy < 7:
@@ -76,14 +78,3 @@ def carnegie_wall_following(x: int, y: int, walls_horizontal: list[list[int]], c
     next_dir = current_dir if dy == 0 else current_dir ^ 1
     blocked = (walls_horizontal[VIEW_SIZE][VIEW_SIZE + dy + 1] if current_dir == 0 else walls_horizontal[VIEW_SIZE][VIEW_SIZE + dy]) ^ 1
     return dy, ((blocked << 1) | next_dir) + 5
-
-
-def main():
-    from twomaze.grader import TwoMazeGrader
-    grader = TwoMazeGrader(2, True)
-    grader.grade()
-    grader.print_result()
-
-
-if __name__ == "__main__":
-    main()

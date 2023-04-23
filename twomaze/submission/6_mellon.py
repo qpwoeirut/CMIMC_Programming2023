@@ -1,6 +1,3 @@
-from carnegie import *
-
-
 def mellon_1(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
     return mellon_wall_following(x, y, walls_vertical, clock_times)
 
@@ -14,6 +11,8 @@ def mellon_3(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[
 
 
 def mellon_greedy(x: int, walls_vertical: list[list[int]], current_dir: int) -> int:
+    VIEW_SIZE = 8
+
     dx = 0
     if current_dir == 0:  # right
         while dx < 7:
@@ -29,6 +28,8 @@ def mellon_greedy(x: int, walls_vertical: list[list[int]], current_dir: int) -> 
 
 
 def compute_dx(x: int, walls_vertical: list[list[int]], current_dir: int) -> int:
+    VIEW_SIZE = 8
+
     if current_dir == 0:  # right
         dx = 1 if walls_vertical[VIEW_SIZE + 1][VIEW_SIZE] == 0 else 0
     else:  # current_dir == 1 -> left
@@ -37,6 +38,9 @@ def compute_dx(x: int, walls_vertical: list[list[int]], current_dir: int) -> int
 
 
 def mellon_wall_following(x: int, y: int, walls_vertical: list[list[int]], clock_times: list[int]) -> tuple[int, int]:
+    MAZE_SIZE = 32
+    VIEW_SIZE = 8
+
     if y == MAZE_SIZE - 1:  # check if we can reach the end in this next move, just in case
         dx = 0
         while dx < 7:
