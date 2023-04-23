@@ -1,0 +1,42 @@
+strategy:
+
+1) keep track of an estimate of the number of lives we have left, as well as a running counter of the number of games played
+2) play a very small number on the first game (losing a life in the beginning is ok if we get a strategic advantage from it
+3) if a player has one life left, then depending on our estimate of our current lives, we can choose to spare them (since they will likely die later anyway)
+4) we need to deduce a range estimate for the guess, and then determine whether it is wise to challenge the opponent
+5) if we reach a stage in the game/come across an opponent who we think is likely to make a larger bet, we should bet small if we have many lives left
+6) once we have one life left we should challenge everything
+7) if we can take a life off of someone who has many lives left we should
+8) we can split the game into 3 stages
+    a) in the early game, we should try to conserve both currency and lives
+        i) we should aim to lose at most 2 lives in the first 5 games
+        ii) we can determine whether a player is likely to play conservatively using the metrics given
+    b) midgame is about attacking people
+        i) we should aim to conserve 15-20 currency for the endgame, meaning that we can place decently large bets in midgame
+        ii) we should try to take out as many players with many lives as possible
+        iii) we need to be very careful about losing lives if we suspect the early game has not gone well
+            ->) if it has gone well, then we should not challenge people with <= 2 lives left
+            ->) if not, then we may have to challenge everything
+                =>) we can try to implement something random for this case
+    c) endgame is about conservation
+        i) every team that makes it to the endgame likely does not have much currency left, and has also bet conservatively (in order to not run out of currency)
+        ii) bets will likely be small unless a player is on their last life, in which case they are inclined to bet what they have
+        iii) just focus on survival in this portion; if an opponent has one life left, then choose to challenge/not challenge
+            ->) in the case that a challenge is made, you can go all in
+                =>) perhaps choose small bets randomly
+9) we can increase the threshold for betting once we get to a point where we have very few lives left
+    a) with one life left we should bet at least half of what we have each time
+
+
+probabilities for >= 10 (if x in history, then chance of playing another is y):
+0 -> 77%
+1 -> 81%
+2 -> 74%
+3 -> 63%
+4 -> 50%
+5 -> 40%
+6 -> 42%
+7 -> 21%
+8 -> 58%
+9 -> 42%
+10 -> 0%

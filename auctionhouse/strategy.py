@@ -191,16 +191,16 @@ def fifteen(wallet, history):
 
 def largeatfirst (wallet, history):
     if (wallet == 100):
-        return 20
-    if (wallet == 80):
+        return 12
+    if (wallet == 88):
         return 2
-    if (wallet == 78):
-        return 20
-    if (wallet == 58):
-        return 20
-    if (wallet == 38):
+    if (wallet == 86):
         return 10
-    return 4
+    if (wallet == 76):
+        return 2
+    if (wallet == 60):
+        return 2
+    return min(wallet, 7)
 
 cturns = 0
 def zeroinitial (wallet, history):
@@ -221,7 +221,7 @@ def zeroinitial (wallet, history):
 turns = 0
 def betterthanreveng(wallet, history):
     z = wins(wallet, history)
-    th = 12
+    th = 10
     guess = []
     cnt = 0
     cnt2 = 0
@@ -240,13 +240,13 @@ def betterthanreveng(wallet, history):
     sz = len(history)
 
     if turns == 1:
-        return 0
+        return 1
 
     if turns == 2:
-        return 21
+        return 13
 
     if turns == 3:
-        return 17
+        return 12
 
     if turns == 4:
         return 13
@@ -299,9 +299,9 @@ def reveng(wallet, history):
     mx = 0
     for i, j in history:
         guess.append(i)
-        if i > th:
+        if i >= th:
             cnt += 1
-        if i > 2 * th:
+        if i >= 2 * th:
             cnt2 += 1
         if i > mx:
             mx = i
@@ -388,13 +388,36 @@ def revengsmart(wallet, history):
 
     return min(wallet, res + 1, 7)
 
-def copycat(wallet, history):
+ind = 0
+b = [16,16,16,9,8,8,6,6,4,4,2,2,2,1]
+random.shuffle(b)
+def randperm(wallet, history):
+    global ind
+    ind += 1
 
+    if (ind > len(b)):
+        return 0
+
+    return b[ind-1]
+
+lb = 0
+copyturns = 0
+def copycat(wallet, history):
+    th = 8
+    global lb
+    global copyturns
+    copyturns += 1
     z = wins(wallet, history)
     sz = len(history)
-    if (sz == 0):
+    if (copyturns == 0):
+        return 1
+    if (copyturns == 1):
         return 0
-    return min(wallet, z[0] + 1, history[sz-1][0] + 1)
+    elif sz == 0:
+        return 1
+    ans = min(wallet, z[0] + 1, history[sz-1][0] + 1)
+    ans = min(ans, 2 * th)
+    return ans
 
 # attempt to troll good strategies by providing horrible data
 def scare(wallet, history):
@@ -405,6 +428,7 @@ def scare(wallet, history):
     res = z[0]
 
     return min(wallet, res + 1, 8)
+
 
 
 def gambler(wallet, history):
@@ -432,6 +456,96 @@ def mixed (wallet, history):
     if par == 7:
         return copycat(wallet, history)
     return betterthanreveng(wallet,history)
+
+
+curturns = 0
+curloss = 0
+def best(wallet, history):
+    z = wins(wallet, history)
+    th = 10
+    res = 100
+    guess = []
+    cnt = 0
+    cnt2 = 0
+    mx = 0
+    for i, j in history:
+        guess.append(i)
+        if i > th:
+            cnt += 1
+        if i > 2 * th:
+            cnt2 += 1
+        if i > mx:
+            mx = i
+    sz = len(guess)
+
+    global curturns
+    global curloss
+    curturns += 1
+
+    if (curturns >= 9):
+        th = th//2
+    if (curturns == 1):
+        curloss += 6 #6/10 chance that we lose with 2
+        return 1
+    if (curturns <= 4):
+
+        if (cnt >= 2):
+            if (z[0] + 1 > th//2):
+                curloss += 4
+            return min(wallet, z[0] + 1, th//2)
+
+        tmpval = 14
+
+        if (tmpval >= z[0] + 1):
+            tmpval = z[0] + 1
+        else:
+            curloss += 2
+        return min(wallet, z[0] + 1, tmpval)
+
+    if (wallet > 2 and curloss//10 > 4): #assume we only have like 3 turns left max
+        if (z[1] == 4):
+            return min(wallet, z[0] + 1, max(1,wallet-1))
+        return min(wallet, z[0] + 1, max(1, wallet - 3))
+
+    if (z[1] == 4):
+        if (wallet >= z[0] + 1 and z[0] + 1 <= th):
+            return z[0] + 1
+        if (curloss//10 == 3):
+            if (wallet >= z[0] + 1 and z[0] + 1 <= 2 * th):
+                return z[0] + 1
+            else:
+                return min(wallet, 1)
+
+    if (curloss//10 > z[1]):
+        if (wallet >= z[0] + 1 and z[0] + 1 <= 2 * th):
+            return z[0] + 1
+        if (cnt >= 2):
+            curloss += 2
+            return min(wallet, th + 2)
+        curloss += 1
+        return min(wallet, 2 * th)
+
+    if (curloss//10 < z[1]):
+        if (wallet >= z[0] + 1 and z[0] + 1 <= th):
+            return z[0] + 1
+        curloss += 8
+        return min(wallet, 3)
+
+    curloss += 4
+    return min(wallet, th)
+
+
+#copy from the best team form the last game
+
+clowncounter = 0
+def clown(wallet, history):
+    global clowncounter
+    clowncounter += 1
+    a = [3,11,7,2,12,10,6,3,1,2,5,6,1,2,2,2,2,1,1]
+
+    if (clowncounter - 1 >= len(a)):
+        return min(wallet, 1)
+    return a[clowncounter - 1]
 # Edit me!
 def get_strategies():
     """
@@ -443,11 +557,19 @@ def get_strategies():
 
     In the official grader, only the first element of the list will be used as your strategy.
     """
-    strategies = [betterthanreveng, copycat,zeroinitial,
+    strategies = [
+                     copycat, betterthanreveng,
+                     #mixed
+                  zeroinitial, randperm,
                   vivek_troll00, smartseven, gambler, villain, consrand, atk, consatk, cons, consdest,
                 consrand2, seven, powers, fifth, conspow, tenth, six, eight, seventh, eighth, ninth, smart,
                   five, smarterseven, revengsmart, scare, killreveng, troll, half, low, pluw, risky,
                  fifteen, reveng, zeroinitial,gambleragain,
-                  largeatfirst, mixed] + ([largeatfirst]) * 100 + ([zeroinitial]) * 10 + ([copycat]) * 10
+                 clown,
+                    # largeatfirst,
+                best] +\
+                ([largeatfirst]) \
+                 + ([zeroinitial]) * 5 +([clown]) * 10
+                 # + ([copycat]) * 10
 
     return strategies
