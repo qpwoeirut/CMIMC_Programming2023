@@ -52,3 +52,15 @@ python3 main.py -p 2 -n 5000
 python3 main.py -p 3 -n 500
 500 runs: mean=9291.52, stddev=4023.973, stderr=179.9575. Took 71.6458s.
 ```
+
+Fourth submission: `116562 (12603, 16558, 87401)`
+```
+python3 main.py -p 1 -n 10000
+10000 runs: mean=1144.6213, stddev=474.6409, stderr=4.7464. Took 46.8482s.
+
+python3 main.py -p 2 -n 5000
+5000 runs: mean=1595.5528, stddev=684.1512, stderr=9.6754. Took 65.1785s.
+
+python3 main.py -p 3 -n 500
+500 runs: mean=8803.026, stddev=3962.0794, stderr=177.1896. Took 100.4248s.
+```
