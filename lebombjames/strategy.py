@@ -4,8 +4,66 @@ from typing import Callable
 BOARD_SIZE = 10
 PLACEMENTS = 3
 
+"""
+#..#..#..#
+.x......x.
+..........
+#..#..#..#
+x........x
+..........
+#..#..#..#
+x........x
+..........
+#..#..#..#
+"""
+def grid_pattern_strategy(pid: int, board: list[list[list[int]]]) -> list[tuple[int, int]]:
+    locations = [(r, c) for r in range(0, 3, BOARD_SIZE) for c in range(0, 3, BOARD_SIZE)]
+    return pattern_strategy(pid, board, locations)
 
-def lurking_score(board, r, c) -> int:
+
+"""
+#....#....
+...#....#.
+.#....#...
+....#....#
+..#....#..
+#....#....
+...#....#.
+.#....#...
+....#....#
+..#....#..
+"""
+def offset_pattern_strategy(pid: int, board: list[list[list[int]]]) -> list[tuple[int, int]]:
+    locations = [(r, c) for r in range(BOARD_SIZE) for c in range((r * 3) % 5, BOARD_SIZE, 5)]
+    return pattern_strategy(pid, board, locations)
+
+
+"""
+#...#...##
+..#...#...
+..........
+#...#...#.
+..#...#...
+..........
+#...#...#.
+..#...#...
+..........
+#...#...##
+"""
+def two_row_pattern_strategy(pid: int, board: list[list[list[int]]]) -> list[tuple[int, int]]:
+    locations = [(r, c) for r in range(BOARD_SIZE) for c in range((r * 3) % 5, BOARD_SIZE, 5)]
+    return pattern_strategy(pid, board, locations)
+
+
+def pattern_strategy(pid: int, board: list[list[list[int]]], pattern_locations: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    primary = [loc for loc in pattern_locations if board[loc[0]][loc[1]][pid] == 0]
+    secondary = [loc for loc in pattern_locations if board[loc[0]][loc[1]][pid] == 1]
+    primary.sort(key=lambda loc: nearby_blast_score(board, loc[0], loc[1]))
+    secondary.sort(key=lambda loc: nearby_blast_score(board, loc[0], loc[1]))
+    return (primary + secondary + [random_location() for _ in range(3)])[:3]
+
+
+def lurking_score(board: list[list[list[int]]], r: int, c: int) -> int:
     score = blast_score(board, r, c) * 100
     if in_board(r - 2, c - 2):
         score -= sum(board[r - 2][c - 2])
@@ -18,31 +76,39 @@ def lurking_score(board, r, c) -> int:
     return score
 
 
-def lurking_strategy(pid, board):
+def lurking_strategy(pid: int, board: list[list[list[int]]]) -> list[tuple[int, int]]:
     return minimum_score(pid, board, lurking_score)
 
 
-def random_lurking_strategy(pid, board):
+def random_lurking_strategy(pid: int, board: list[list[list[int]]]) -> list[tuple[int, int]]:
     return random_minimum_score(pid, board, lurking_score)
 
 
 # counts settlements within blast radius of bomb centered at (r, c)
-def blast_score(board, r, c) -> int:
+def blast_score(board: list[list[list[int]]], r: int, c: int) -> int:
     score = 0
     for loc in nearby_locations(r, c):
         score += sum(board[loc[0]][loc[1]])
     return score
 
 
-def random_distancing_strategy(pid, board):
+def nearby_blast_score(board: list[list[list[int]]], r: int, c: int) -> int:
+    score = 0
+    for loc in nearby_locations(r, c):
+        score = max(score, blast_score(board, loc[0], loc[1]))
+    return score
+
+
+def random_distancing_strategy(pid: int, board: list[list[list[int]]]) -> list[tuple[int, int]]:
     return random_minimum_score(pid, board, blast_score)
 
 
-def distancing_strategy(pid, board):
+def distancing_strategy(pid: int, board: list[list[list[int]]]) -> list[tuple[int, int]]:
     return minimum_score(pid, board, blast_score)
 
 
-def random_minimum_score(pid, board, score_func: Callable[[[list[list[list[int]]]], int, int], int]) -> list[tuple[int, int]]:
+def random_minimum_score(pid: int, board: list[list[list[int]]], score_func: Callable[[[list[list[list[int]]]], int, int], int]) -> list[
+    tuple[int, int]]:
     to_place = []
 
     scores = [[0 for _ in row] for row in board]
@@ -64,7 +130,7 @@ def random_minimum_score(pid, board, score_func: Callable[[[list[list[list[int]]
     return to_place
 
 
-def minimum_score(pid, board, score_func) -> list[tuple[int, int]]:
+def minimum_score(pid: int, board: list[list[list[int]]], score_func: Callable[[[list[list[list[int]]]], int, int], int]) -> list[tuple[int, int]]:
     to_place = []
 
     scores = [[0 for _ in row] for row in board]
@@ -117,11 +183,11 @@ def random_border_location() -> tuple[int, int]:
         return random.randint(0, 9), edge_value
 
 
-def random_border(pid, board) -> list[tuple[int, int]]:
+def random_border_strategy(pid, board) -> list[tuple[int, int]]:
     return [random_border_location() for _ in range(3)]
 
 
-def random_corner(pid, board) -> list[tuple[int, int]]:
+def random_corner_strategy(pid, board) -> list[tuple[int, int]]:
     return [(random.randint(0, 1) * 9, random.randint(0, 1) * 9) for _ in range(PLACEMENTS)]
 
 
@@ -134,15 +200,14 @@ def get_strategies():
 
     In the official grader, only the first element of the list will be used as your strategy. 
     """
-    # strategies = [lurking_strategy, random_lurking_strategy, distancing_strategy, random_distancing_strategy, random_strategy]
-    strategies = [lurking_strategy, random_corner, random_corner, random_corner, random_corner]
+    strategies = [offset_pattern_strategy, grid_pattern_strategy, lurking_strategy, random_strategy, random_border_strategy]
 
     return strategies
 
 
 def main():
     from lebombjames.grader import LebombJamesGrader
-    grader = LebombJamesGrader(True, True)
+    grader = LebombJamesGrader(True, False)
     grader.grade()
     grader.print_result()
 
