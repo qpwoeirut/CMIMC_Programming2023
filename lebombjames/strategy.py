@@ -1,33 +1,29 @@
-"""
-Edit this file! This is the file you will submit.
-"""
 import random
+from typing import Callable
 
 BOARD_SIZE = 10
 PLACEMENTS = 3
 
 
-def distancing_strategy(pid, board):
-    to_place = []
+def lurking_score(board, r, c) -> int:
+    score = blast_score(board, r, c) * 100
+    if in_board(r - 2, c - 2):
+        score -= sum(board[r - 2][c - 2])
+    if in_board(r - 2, c + 2):
+        score -= sum(board[r - 2][c + 2])
+    if in_board(r + 2, c - 2):
+        score -= sum(board[r + 2][c - 2])
+    if in_board(r + 2, c + 2):
+        score -= sum(board[r + 2][c + 2])
+    return score
 
-    scores = [[0 for _ in row] for row in board]
-    for r in range(BOARD_SIZE):
-        for c in range(BOARD_SIZE):
-            scores[r][c] = blast_score(board, r, c)
 
-    for _ in range(PLACEMENTS):
-        min_score = float("inf")
-        min_r, min_c = 0, 0
-        for r in range(BOARD_SIZE):
-            for c in range(BOARD_SIZE):
-                if min_score > scores[r][c]:
-                    min_score = scores[r][c]
-                    min_r = r
-                    min_c = c
-        for loc in nearby_locations(min_r, min_c):
-            scores[loc[0]][loc[1]] += 1
-        to_place.append((min_r, min_c))
-    return to_place
+def lurking_strategy(pid, board):
+    return minimum_score(pid, board, lurking_score)
+
+
+def random_lurking_strategy(pid, board):
+    return random_minimum_score(pid, board, lurking_score)
 
 
 # counts settlements within blast radius of bomb centered at (r, c)
@@ -38,18 +34,71 @@ def blast_score(board, r, c) -> int:
     return score
 
 
+def random_distancing_strategy(pid, board):
+    return random_minimum_score(pid, board, blast_score)
+
+
+def distancing_strategy(pid, board):
+    return minimum_score(pid, board, blast_score)
+
+
+def random_minimum_score(pid, board, score_func: Callable[[[list[list[list[int]]]], int, int], int]) -> list[tuple[int, int]]:
+    to_place = []
+
+    scores = [[0 for _ in row] for row in board]
+    for _ in range(PLACEMENTS):
+        min_score = float("inf")
+        min_locs = []
+        for r in range(BOARD_SIZE):
+            for c in range(BOARD_SIZE):
+                scores[r][c] = score_func(board, r, c)
+                if min_score > scores[r][c]:
+                    min_score = scores[r][c]
+                    min_locs = []
+                if min_score == scores[r][c]:
+                    min_locs.append((r, c))
+
+        min_r, min_c = random.choice(min_locs)
+        board[min_r][min_c][pid] += 1
+        to_place.append((min_r, min_c))
+    return to_place
+
+
+def minimum_score(pid, board, score_func) -> list[tuple[int, int]]:
+    to_place = []
+
+    scores = [[0 for _ in row] for row in board]
+    for _ in range(PLACEMENTS):
+        min_score = float("inf")
+        min_r, min_c = 0, 0
+        for r in range(BOARD_SIZE):
+            for c in range(BOARD_SIZE):
+                scores[r][c] = score_func(board, r, c)
+                if min_score > scores[r][c]:
+                    min_score = scores[r][c]
+                    min_r = r
+                    min_c = c
+        board[min_r][min_c][pid] += 1
+        to_place.append((min_r, min_c))
+    return to_place
+
+
 # returns locations within blast centered at (r, c), including (r, c)
 def nearby_locations(r: int, c: int) -> list[tuple[int, int]]:
     locations = [(r, c)]
-    if r > 0:
+    if in_board(r - 1, c):
         locations.append((r - 1, c))
-    if r + 1 < BOARD_SIZE:
+    if in_board(r + 1, c):
         locations.append((r + 1, c))
-    if c > 0:
+    if in_board(r, c - 1):
         locations.append((r, c - 1))
-    if c + 1 < BOARD_SIZE:
+    if in_board(r, c + 1):
         locations.append((r, c + 1))
     return locations
+
+
+def in_board(r: int, c: int) -> bool:
+    return 0 <= r < BOARD_SIZE and 0 <= c < BOARD_SIZE
 
 
 def random_location() -> tuple[int, int]:
@@ -72,6 +121,10 @@ def random_border(pid, board) -> list[tuple[int, int]]:
     return [random_border_location() for _ in range(3)]
 
 
+def random_corner(pid, board) -> list[tuple[int, int]]:
+    return [(random.randint(0, 1) * 9, random.randint(0, 1) * 9) for _ in range(PLACEMENTS)]
+
+
 def get_strategies():
     """
     Returns a list of strategy functions to use in a game.
@@ -81,14 +134,15 @@ def get_strategies():
 
     In the official grader, only the first element of the list will be used as your strategy. 
     """
-    strategies = [distancing_strategy, random_strategy, random_strategy, random_border, random_border]
+    # strategies = [lurking_strategy, random_lurking_strategy, distancing_strategy, random_distancing_strategy, random_strategy]
+    strategies = [lurking_strategy, random_corner, random_corner, random_corner, random_corner]
 
     return strategies
 
 
 def main():
     from lebombjames.grader import LebombJamesGrader
-    grader = LebombJamesGrader(True, False)
+    grader = LebombJamesGrader(True, True)
     grader.grade()
     grader.print_result()
 
