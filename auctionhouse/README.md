@@ -1,3 +1,5 @@
+## Solution
+
 After trying a couple of strategies out, we noticed that a lot of people were betting large amounts initially and then reducing bets over time. We noticed that in the first 5 turns, people were betting >= 10 once or twice (with approximately 70% probability). As a result, we realized that if we bet larger amounts later in the game, we had a higher chance of winning (because other teams would run out of mana quickly). We built our strategy with this in mind, also noting that we needed to make sure to win some initial games (in order to not get eliminated early).
 
 First, we looked through the data and realized that on the first bet, about 18% of people were betting 0 and another 15% were betting 1. We were willing to take this risk on the first bet, so we bet 1 on the first turn. On the second turn, we decided to bet another small amount (if it was the opponents second turn, we assumed we would lose and bet 0, but if it was the opponent's first turn, we took the 25% risk and bet 1 in case we could win that match). 
